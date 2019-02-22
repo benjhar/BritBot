@@ -231,4 +231,4 @@ async def prefix(ctx):
 
 
 
-bot.run("NTA1ODAwOTQ5MjQwMDM3NDE2.DrY6BA.GumABmf73KicSH5NhuOvRrGzYn8")
+bot.run("YOUR_BOTS_TOKEN")
