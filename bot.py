@@ -19,15 +19,6 @@ bot.remove_command("help")
 os.chdir(r"/home/pi/Desktop/Documents/Coding/Python/Discord/Role")
 
 @bot.command(pass_context=True)
-async def prefixGet(ctx, message):
-    content = ctx.message.content
-    if len(content) > 1 or len(content) < 1:
-        prefixGet()
-    else:
-        prefix = content
-        await bot.change_presence(game=discord.Game(name=command_prefix + "help"))
-
-@bot.command(pass_context=True)
 async def help(ctx):
     author = ctx.message.author
 
@@ -218,17 +209,5 @@ async def stop(ctx):
 async def resume(ctx):
     id = ctx.message.server.id
     players[id].resume()
-
-@bot.command(pass_context=True)
-async def prefix(ctx):
-    try:
-        if "503487942732414976" in [role.id for role in ctx.message.author.roles]:
-            prefixGet()
-        else:
-            await bot.say("You do not have permission to run that command")
-    except:
-        await bot.say("Invalid Input")
-
-
 
 bot.run("YOUR_BOTS_TOKEN")
