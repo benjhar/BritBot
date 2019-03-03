@@ -153,7 +153,6 @@ async def noot(ctx):
     except:
         await bot.say("Invalid Input")
 
-"""
 @bot.command(pass_context=True)
 async def say(ctx):
     try:
@@ -164,8 +163,18 @@ async def say(ctx):
             await bot.say(content)
     except:
         await bot.say("Invalid Input")
+@bot.command(pass_context=True)
+async def getpoll(ctx):
+	content = ctx.message.content[len(command_prefix + 'getpoll'):].strip()
+	poll = strawpy.get_poll(str(content))
 
-"""
+	embed = discord.Embed(title="{}'s info".format(poll.title), description="Here's what I could find:", color=0xf4df42)
+	embed.add_field(name="Options", value=poll.options, inline=False)
+	embed.add_field(name="Votes", value=poll.votes, inline=False)
+	embed.add_field(name="Results", value=poll.results_url, inline=False)
+	embed.set_thumbnail(url="https://pbs.twimg.com/profile_images/737742455643070465/yNKcnrSA_400x400.jpg")
+	await bot.say(embed=embed)
+
 @bot.command(pass_context=True)
 async def stpoll(ctx):
     try:
