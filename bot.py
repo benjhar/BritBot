@@ -150,4 +150,4 @@ async def help(ctx):
     await ctx.message.add_reaction("✉")
 
 
-client.run(os.getenv("BRITBOT_DEV_TOKEN"))
+client.run(os.getenv("BOT_TOKEN"))
