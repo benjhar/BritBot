@@ -124,15 +124,32 @@ class util(commands.Cog):
     @commands.command(pass_context=True)
     async def rem(self, ctx, amount):
         if ctx.message.author.guild_permissions.manage_messages:
-            channel = ctx.channel
-            messages = []
-            async for message in channel.history(limit=int(amount) + 1):
-                messages.append(message)
-            await channel.delete_messages(messages)
+            if int(amount) > 99 or int(amount) < 2:
+                await ctx.channel.send('Please enter a value between 2 and 99')
+            else:
+                channel = ctx.channel
+                messages = []
+                async for message in channel.history(limit=int(amount) + 1):
+                    messages.append(message)
+                await channel.delete_messages(messages)
         else:
             await ctx.channel.send(
                 f"{ctx.message.author.mention}, you do not have permission to run that command"
             )
+
+    @commands.command(pass_context=True)
+    async def addrole(self, ctx):
+        role = ctx.message.content.replace('brit addrole ', '')
+        role = get(ctx.message.guild.roles, name=role)
+        if role:
+            await ctx.message.author.add_roles(role)
+
+    @commands.command(pass_context=True)
+    async def remrole(self, ctx):
+        role = ctx.message.content.replace('brit remrole ', '')
+        role = get(ctx.message.guild.roles, name=role)
+        if role:
+            await ctx.message.author.remove_roles(role)
 
 
 def setup(client):

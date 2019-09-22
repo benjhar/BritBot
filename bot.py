@@ -8,26 +8,17 @@ import os
 
 import tiquations
 
-
-extensions = ['cogs.programming', 'cogs.util', 'cogs.fun', 'cogs.sound']
-categories = ['programming', 'util', 'fun']
-commandlist = [
-    'blackify',
-    'yapfify',
-    'pepify',
-    'whois',
-    'whoami',
-    'ping',
-    'bug',
-    ''
-]
+extensions = ["cogs.programming", "cogs.util", "cogs.fun", "cogs.sound"]
+categories = ["programming", "util", "fun"]
+commandlist = ["blackify", "yapfify", "pepify", "whois", "whoami", "ping", "bug", ""]
 
 players = {}
-command_prefix = 'brit '
+command_prefix = "brit "
 client = commands.Bot(command_prefix)
 client.remove_command("help")
 os.chdir(r"C:\\Users\\benha\\Documents\\Coding\\Python\\DiscordBots\\BritBot")
-colour = 0x33abc6
+colour = 0x33ABC6
+
 
 async def update_data(users, user):
     if user.id not in users:
@@ -43,11 +34,12 @@ async def add_experience(users, user, exp):
 async def level_up(users, user, channel):
     experience = users[user.id]["experience"]
     lvl_start = users[user.id]["level"]
-    lvl_end = int(experience**(1 / 4))
+    lvl_end = int(experience ** (1 / 4))
     users[user.id]["level"] = lvl_end
     if lvl_start < lvl_end:
         await client.send_message(
-            channel, f"{user.mention} has leveled up to level {lvl_end}")
+            channel, f"{user.mention} has leveled up to level {lvl_end}"
+        )
 
 
 @client.command(pass_context=True)
@@ -55,51 +47,52 @@ async def help(ctx):
     embed = discord.Embed(color=colour)
     embed.add_field(name="help", value="Returns this message.", inline=False)
 
-    key = ctx.message.content.replace('brit help ', '').lower()
+    key = ctx.message.content.replace("brit help ", "").lower()
     if key in categories:
-        if key == 'programming':
+        if key == "programming":
             embed.add_field(
-                name='blackify',
-                value=
-                'input some python code and it will return it formatted using Black',
-                inline=False)
+                name="blackify",
+                value="input some python code and it will return it formatted using Black",
+                inline=False,
+            )
             embed.add_field(
-                name='yapfify',
-                value='returns formatted python code using google yapf',
-                inline=False)
-            embed.add_field(name='pepify',
-                            value='returns code formatted using Autopep8',
-                            inline=False)
-        elif key == 'util':
-            embed.add_field(name="ping",
-                            value="Returns ':ping_pong: pong!!'",
-                            inline=False)
-            embed.add_field(name="whois",
-                            value="Returns info on the given user",
-                            inline=False)
-            embed.add_field(name="whoami",
-                            value="Returns info on you.",
-                            inline=False)
-            embed.add_field(name="say",
-                            value="Returns the text you entered",
-                            inline=False)
-            embed.add_field(name="getpoll",
-                            value="Returns info on a strawpoll",
-                            inline=False)
-        elif key == 'fun':
-            embed.add_field(name="noot",
-                            value="Returns an image of pingu.",
-                            inline=False)
-            embed.add_field(name='pong',
-                            value='play a game of pong online',
-                            inline=False)
+                name="yapfify",
+                value="returns formatted python code using google yapf",
+                inline=False,
+            )
+            embed.add_field(
+                name="pepify",
+                value="returns code formatted using Autopep8",
+                inline=False,
+            )
+        elif key == "util":
+            embed.add_field(
+                name="ping", value="Returns ':ping_pong: pong!!'", inline=False
+            )
+            embed.add_field(
+                name="whois", value="Returns info on the given user", inline=False
+            )
+            embed.add_field(name="whoami", value="Returns info on you.", inline=False)
+            embed.add_field(
+                name="say", value="Returns the text you entered", inline=False
+            )
+            embed.add_field(
+                name="getpoll", value="Returns info on a strawpoll", inline=False
+            )
+        elif key == "fun":
+            embed.add_field(
+                name="noot", value="Returns an image of pingu.", inline=False
+            )
+            embed.add_field(
+                name="pong", value="play a game of pong online", inline=False
+            )
 
         msg = await ctx.message.author.send(embed=embed)
     else:
         await ctx.message.author.send(
-            f'{key} is not a valid key. Accepted keys are: Programming, Util and Fun'
+            f"{key} is not a valid key. Accepted keys are: Programming, Util and Fun"
         )
-    await ctx.message.add_reaction('✉')
+    await ctx.message.add_reaction("✉")
 
 
 @client.event
@@ -111,10 +104,10 @@ async def on_ready():
     )
     print(f"With the ID: {client.user.id}")
     print("\n \n")
-    await client.change_presence(activity=discord.Game(name=command_prefix +
-                                                       "help"))
+    await client.change_presence(activity=discord.Game(name=command_prefix + "help"))
 
 
+"""
 @client.event
 async def on_message(message):
     try:
@@ -171,24 +164,53 @@ async def on_member_join(member):
     with open("economy.json", "w") as file:
 
         file.write(json.dumps(users))
+"""
+
 
 @client.command(pass_context=True)
 async def load(ctx):
-    """Loads an extension."""
-    extension_name = ctx.message.content.replace(f'dev load ', '')
-    try:
-        client.load_extension(extension_name)
-    except (AttributeError, ImportError) as e:
-        await ctx.channel.send("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
-        return
-    await ctx.channel.send("{} loaded.".format(extension_name))
+    if ctx.message.author.id == 330404011197071360:
+        """Loads an extension."""
+        extension_name = ctx.message.content.replace(f"{command_prefix}load ", "")
+        try:
+            client.load_extension(f"cogs.{extension_name}")
+        except (AttributeError, ImportError) as e:
+            await ctx.channel.send(
+                "```py\n{}: {}\n```".format(type(e).__name__, str(e))
+            )
+            return
+        await ctx.channel.send("{} loaded.".format(extension_name))
+    else:
+        await ctx.channel.send("fuggoff")
+
 
 @client.command(pass_context=True)
 async def unload(ctx):
-    """Unloads an extension."""
-    extension_name = ctx.message.content.replace(f'dev unload ', '')
-    client.unload_extension(extension_name)
-    await ctx.channel.send("{} unloaded.".format(extension_name))
+    if ctx.message.author.id == 330404011197071360:
+        """Unloads an extension."""
+        extension_name = ctx.message.content.replace(f"{command_prefix}unload ", "")
+        client.unload_extension(f"cogs.{extension_name}")
+        await ctx.channel.send("{} unloaded.".format(extension_name))
+    else:
+        await ctx.channel.send("fuggoff")
+
+
+@client.command(pass_context=True)
+async def reload(ctx):
+    if ctx.message.author.id == 330404011197071360:
+        """Reloads an extension."""
+        extension_name = ctx.message.content.replace(f"{command_prefix}reload ", "")
+        try:
+            client.unload_extension(f"cogs.{extension_name}")
+            client.load_extension(f"cogs.{extension_name}")
+        except (AttributeError, ImportError) as e:
+            await ctx.channel.send(
+                "```py\n{}: {}\n```".format(type(e).__name__, str(e))
+            )
+            return
+        await ctx.channel.send("{} reloaded.".format(extension_name))
+    else:
+        await ctx.channel.send("fuggoff")
 
 
 if __name__ == "__main__":
@@ -196,7 +218,7 @@ if __name__ == "__main__":
         try:
             client.load_extension(extension)
         except Exception as e:
-            exc = f'{type(e).__name__}: {e}'
-            print(f'Failed to load extension {extension}\n{exc}')
+            exc = f"{type(e).__name__}: {e}"
+            print(f"Failed to load extension {extension}\n{exc}")
 
-client.run(os.getenv('TOKEN'))
+client.run("NTA1ODAwOTQ5MjQwMDM3NDE2.XSoAew.12TtWb0v38EEptlZR373o4UX2so")
