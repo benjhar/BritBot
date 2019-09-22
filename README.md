@@ -24,6 +24,7 @@ BritBot has many util commands, and yet more to come!
 ---
 #### whois
 Return info on a given user.
+
 Aliases:
 * user
 * u
@@ -31,12 +32,14 @@ Aliases:
 ---
 #### whoami
 Returns info on you.
+
 Aliases:
 * me
 * m
 ---
 #### say
 Have BritBot say something. This command is only available to those with **Manage Messages** permissions
+
 Aliases:
 * s
 > brit say Hello
@@ -47,6 +50,7 @@ Aliases:
 
 #### bug
 Report a bug to the devs
+
 Aliases:
 * b
 > brit bug Not enough fun commands
@@ -56,6 +60,7 @@ Keep in mind that your username is included in the bug report.
 ---
 #### ping
 Return BritBot's ping to the Discord API
+
 Aliases:
 * latency
 * p
@@ -63,6 +68,7 @@ Aliases:
 ---
 #### tea
 Return news on a given query or subject.
+
 Arguments:
 * query
 * category
@@ -80,6 +86,7 @@ BritBot has various code formatting commands - for those of you who like Python 
 ---
 #### blacken
 Format code with "black"
+
 Aliases:
 * bn
 * black
@@ -106,6 +113,7 @@ def very_important_function(
 ---
 #### yapfify
 Formats code using the Google YAPF formatting.
+
 Aliases:
 * y
 * yp
@@ -131,6 +139,7 @@ def very_important_function(template: str,
 ---
 #### pepify
 Formats code using PEP8 formatting
+
 Aliases:
 * pep
 * pep8
