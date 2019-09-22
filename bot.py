@@ -34,10 +34,25 @@ client.remove_command("help")
 os.chdir(r"C:\\Users\\benha\\Documents\\Coding\\Python\\DiscordBots\\BritBot")
 
 
+@client.event
+async def on_ready():
+    print("Ready when you are.")
+    print(f"I am running on {client.user.name}")
+    print(
+        f"With the {discord.__version__} version of discord.py. Version info:\n {discord.version_info}"
+    )
+    print(f"With the ID: {client.user.id}")
+    print("\n \n")
+    await client.change_presence(activity=discord.Game(name=command_prefix + "help"))
+
+
 @client.command(pass_context=True)
 async def load(ctx):
     # Loads an extension.
     extension_name = ctx.message.content[len(command_prefix + "load") :].strip()
+    if not extension_name in extensions:
+        await ctx.channel.send("That is not the name of an extension.")
+        return
     try:
         client.load_extension(f"cogs.{extension_name}")
     except (AttributeError, ImportError) as e:
@@ -50,6 +65,9 @@ async def load(ctx):
 async def unload(ctx, message):
     # Unloads an extension.
     extension_name = ctx.message.content[len(command_prefix + "unload") :].strip()
+    if not extension_name in extensions:
+        await ctx.channel.send("That is not the name of an extension.")
+        return
     client.unload_extension(f"cogs.{extension_name}")
     await ctx.channel.send("{} unloaded.".format(extension_name))
 
@@ -58,6 +76,9 @@ async def unload(ctx, message):
 async def reload(ctx):
     # Reloads an extension
     extension_name = ctx.message.content[len(command_prefix + "reload") :].strip()
+    if not extension_name in extensions:
+        await ctx.channel.send("That is not the name of an extension.")
+        return
     client.unload_extension(f"cogs.{extension_name}")
     try:
         client.load_extension(f"cogs.{extension_name}")
@@ -127,18 +148,6 @@ async def help(ctx):
             f"{key} is not a valid key. Accepted keys are: Programming, Util and Fun"
         )
     await ctx.message.add_reaction("✉")
-
-
-@client.event
-async def on_ready():
-    print("Ready when you are.")
-    print(f"I am running on {client.user.name}")
-    print(
-        f"With the {discord.__version__} version of discord.py. Version info:\n {discord.version_info}"
-    )
-    print(f"With the ID: {client.user.id}")
-    print("\n \n")
-    await client.change_presence(activity=discord.Game(name=command_prefix + "help"))
 
 
 client.run(os.getenv("BRITBOT_DEV_TOKEN"))

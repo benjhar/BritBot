@@ -19,7 +19,7 @@ class programming(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["bn", "black"])
     async def blacken(self, ctx):
         content = (
             ctx.message.content.replace("```py", "")
@@ -39,7 +39,7 @@ class programming(commands.Cog):
         text = "```py\n" + text + "\n```"
         await ctx.channel.send(text)
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["y", "yp", "yapf"])
     async def yapfify(self, ctx):
         content = (
             ctx.message.content.replace("```py", "")
@@ -51,7 +51,7 @@ class programming(commands.Cog):
         time.sleep(1)
         await ctx.channel.send(formatted)
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["pep", "pep8", "p8"])
     async def pepify(self, ctx):
         content = (
             ctx.message.content.replace("```py", "")

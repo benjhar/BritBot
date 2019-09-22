@@ -21,7 +21,7 @@ class util(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["user", "u"])
     async def whois(self, ctx, user: discord.Member):
         try:
             embed = discord.Embed(
@@ -42,7 +42,7 @@ class util(commands.Cog):
                 "**There was an error computing your input. Please try again. If this has happened already, you can report a bug using `brit bug`**"
             )
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["me", "m"])
     async def whoami(self, ctx):
         author = ctx.message.author
 
@@ -59,19 +59,18 @@ class util(commands.Cog):
         embed.set_thumbnail(url=author.avatar_url)
         await ctx.channel.send(embed=embed)
 
-    @commands.command(name="say")
+    @commands.command(name="say", aliases=["s"])
     @has_permissions(manage_messages=True)
     async def say(self, ctx):
         try:
+            await ctx.message.delete()
             message = ctx.message.clean_content[len(command_prefix + "say") :].strip()
-            channel = message.split("|")[1][1:]
-            channel = get(commands.get_all_channels(), name=channel)
-            message = message.split("|")[0]
 
-            await channel.send(message)
+            await ctx.channel.send(message)
         except Exception as e:
+            print(f"Exception in command say with content:\n{message}")
             await ctx.channel.send(
-                "There was a problem processing the command. Please try again later. If this problem persists please contact `leet_hakker#2582`"
+                "There was a problem processing the command. Please try again later. If this problem persists please report a bug using \n`brit bug <bug>`"
             )
             print(e)
 
@@ -82,7 +81,7 @@ class util(commands.Cog):
                 f"{ctx.message.author.mention}, you do not have permission to run that command"
             )
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["gpoll", "gp"])
     async def getpoll(self, ctx):
         try:
             content = ctx.message.content[len(command_prefix + "getpoll") :].strip()
@@ -103,14 +102,14 @@ class util(commands.Cog):
         except:
             await ctx.channel.send("Invalid input")
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["cpoll", "cp"])
     async def createpoll(self, ctx):
         content = ctx.message.content[len(command_prefix + "createpoll") :].strip()
         pollTitle = content.split(",")
         strawpy.create_poll(pollTitle[0], pollTitle[1:])
         await ctx.channel.send("Invalid input")
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["b"])
     async def bug(self, ctx):
         content = ctx.message.content.replace("brit bug", "")
         name = content.split("|")[0]
@@ -124,11 +123,11 @@ class util(commands.Cog):
         embed.add_field(name=name, value=description, inline=False)
         await self.client.get_channel(566282530530131978).send(embed=embed)
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["latency", "p", "l"])
     async def ping(self, ctx):
         r = requests.get(
             "https://discordapp.com/api",
-            headers={"Authorization": f"Bot:{os.getenv('TOKEN')}"},
+            headers={"Authorization": f"Bot:{os.getenv('BRITBOT_DEV_TOKEN')}"},
         )
         latency = r.elapsed.total_seconds()
         embed = discord.Embed(
@@ -137,7 +136,7 @@ class util(commands.Cog):
         embed.add_field(name=":ping_pong:", value=f"{latency*1000}ms", inline=False)
         message = await ctx.channel.send(embed=embed)
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["delete", "del", "remove", "r"])
     async def rem(self, ctx, amount):
         if ctx.message.author.guild_permissions.manage_messages:
             channel = ctx.channel
@@ -150,55 +149,77 @@ class util(commands.Cog):
                 f"{ctx.message.author.mention}, you do not have permission to run that command"
             )
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["t", "news"])
     async def tea(self, ctx):
-        content = ctx.message.content[len(command_prefix + "tea") :].strip().lower()
-        keys = content.split(" ")
-        subject = None
-        category = None
-        country = None
-        source = None
-        for i in keys:
-            if "query:" in i:
-                subject = i.replace("query:", "")
-            elif "category:" in i:
-                category = i.replace("category:", "")
-            elif "country:" in i:
-                country = i.replace("country:", "")
-            elif "source:" in i:
-                source = i.replace("source:", "")
-        if not subject and not category:
-            await ctx.channel.send("I need a query or category to fetch news for.")
-            return
+        try:
+            content = ctx.message.content[len(command_prefix + "tea") :].strip().lower()
+            keys = content.split(" ")
+            subject = None
+            category = None
+            country = None
+            source = None
+            for i in keys:
+                if "query:" in i:
+                    subject = i.replace("query:", "")
+                elif "category:" in i:
+                    category = i.replace("category:", "")
+                elif "country:" in i:
+                    country = i.replace("country:", "")
+                elif "source:" in i:
+                    source = i.replace("source:", "")
+            if not subject and not category:
+                await ctx.channel.send("I need a query or category to fetch news for.")
+                return
 
-        # building query
-        if subject and not category:
-            query = f"https://newsapi.org/v2/everything?q={subject}"
-        elif category:
-            query = f"https://newsapi.org/v2/everything?category={category}"
-            if subject:
-                query += f"&q={subject}"
+            # building query
+            if subject and not category:
+                query = f"https://newsapi.org/v2/everything?q={subject}"
+            elif category or country:
+                query = f"https://newsapi.org/v2/top-headlines?category={category}"
+                if subject:
+                    query += f"&q={subject}"
 
-        if country:
-            query += f"&country={country}"
-        if source:
-            query += f"&source={source}"
-        query += f"&apiKey={os.getenv('NEWS_API_TOKEN')}"
+            if country:
+                query += f"&country={country}"
+            if source:
+                query += f"&source={source}"
+            query += f"&apiKey={os.getenv('NEWS_API_TOKEN')}"
 
-        # fetching
-        r = requests.get(query).json()
-        if r["status"] != "ok":
-            print(r["status"])
-            await ctx.channel.send(
-                f"Could not connect to the API. Response: {r['status']} Please try again later."
+            # fetching
+            r = requests.get(query).json()
+            if r["status"] != "ok":
+                if r["status"] == "error":
+                    print(f"API Error with command:\n{content} \nand query:\n{query}")
+                await ctx.channel.send(
+                    f"Could not connect to the API. Response: `{r['status']}`. Please try again later. If this problem persists please report a bug using \n`brit bug <bug>`"
+                )
+                print(f"API connection error. Error code: {r['status']}")
+                return
+            # building embed from response
+
+            embed = discord.Embed(
+                title=r["articles"][0]["title"],
+                url=r["articles"][0]["url"],
+                description=r["articles"][0]["description"],
+                color=colour,
             )
-        # building embed from response
-        embed = discord.Embed(
-            title=r["articles"][0]["title"],
-            url=r["articles"][0]["url"],
-            description=r["articles"][0]["description"],
-            color=colour,
-        )
+        except (KeyError, IndexError):
+            if category:
+                print(
+                    f"Could Not Fetch Error with command:\n{content} \nand query:\n{query}"
+                )
+                await ctx.channel.send(
+                    f"Could not fetch any articles for the category '{category}'"
+                )
+                return
+            else:
+                print(
+                    f"Could Not Fetch Error with command:\n{content} \nand query:\n{query}"
+                )
+                await ctx.channel.send(
+                    f"Could not fetch any articles for the subject '{subject}'"
+                )
+                return
 
         embed.set_thumbnail(url=r["articles"][0]["urlToImage"])
         embed.set_footer(text="Powered by News API; https://newsapi.org")
