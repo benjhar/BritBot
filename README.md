@@ -1,9 +1,7 @@
 # BritBot
 BritBot is a general purpose Discord Bot with various different features and British... undertones.
 
-## Commands
-
-### Fun
+## Fun
 BritBot has a few Fun commands, although more will come in future.
 
 ---
@@ -18,7 +16,7 @@ Links to an online pong game **¯\\\_(ツ)_/¯**
 
 ---
 
-### Util
+## Util
 BritBot has many util commands, and yet more to come!
 
 ---
@@ -80,7 +78,7 @@ Aliases:
 * news
 > brit tea query:bitcoin category:business country:US source:Gizmodo.com
 
-### Programming
+## Programming
 BritBot has various code formatting commands - for those of you who like Python - that is.
 
 ---
