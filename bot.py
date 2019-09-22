@@ -1,57 +1,91 @@
 import discord
-import json
 from discord.ext import commands
-from discord.ext.commands import bot
+from discord.ext.commands import bot, has_permissions, CheckFailure
 from discord.utils import get
 import asyncio
+import json
 import os
-
+import sys
 import tiquations
+
+# import youtube_dl
 
 extensions = ["cogs.programming", "cogs.util", "cogs.fun", "cogs.sound"]
 categories = ["programming", "util", "fun"]
-commandlist = ["blackify", "yapfify", "pepify", "whois", "whoami", "ping", "bug", ""]
+commandlist = [
+    "blackify",
+    "yapfify",
+    "pepify",
+    "evaluate",
+    "whois",
+    "whoami",
+    "ping",
+    "bug",
+    "tea",
+    "rem",
+    "say",
+]
+
 
 players = {}
 command_prefix = "brit "
-client = commands.Bot(command_prefix)
+client = commands.Bot(command_prefix=command_prefix, case_insensitive=True)
 client.remove_command("help")
 os.chdir(r"C:\\Users\\benha\\Documents\\Coding\\Python\\DiscordBots\\BritBot")
-colour = 0x33ABC6
 
 
-async def update_data(users, user):
-    if user.id not in users:
-        users[user.id] = {}
-        users[user.id]["experience"] = 0
-        users[user.id]["level"] = 1
+@client.command(pass_context=True)
+async def load(ctx):
+    # Loads an extension.
+    extension_name = ctx.message.content[len(command_prefix + "load") :].strip()
+    try:
+        client.load_extension(f"cogs.{extension_name}")
+    except (AttributeError, ImportError) as e:
+        await ctx.channel.send("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
+        return
+    await ctx.channel.send("{} loaded.".format(extension_name))
 
 
-async def add_experience(users, user, exp):
-    users[user.id]["experience"] += exp
+@client.command(pass_context=True)
+async def unload(ctx, message):
+    # Unloads an extension.
+    extension_name = ctx.message.content[len(command_prefix + "unload") :].strip()
+    client.unload_extension(f"cogs.{extension_name}")
+    await ctx.channel.send("{} unloaded.".format(extension_name))
 
 
-async def level_up(users, user, channel):
-    experience = users[user.id]["experience"]
-    lvl_start = users[user.id]["level"]
-    lvl_end = int(experience ** (1 / 4))
-    users[user.id]["level"] = lvl_end
-    if lvl_start < lvl_end:
-        await client.send_message(
-            channel, f"{user.mention} has leveled up to level {lvl_end}"
-        )
+@client.command(pass_context=True)
+async def reload(ctx):
+    # Reloads an extension
+    extension_name = ctx.message.content[len(command_prefix + "reload") :].strip()
+    client.unload_extension(f"cogs.{extension_name}")
+    try:
+        client.load_extension(f"cogs.{extension_name}")
+    except (AttributeError, ImportError) as e:
+        await ctx.channel.send("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
+        return
+    await ctx.channel.send(f"{extension_name} reloaded")
+
+
+if __name__ == "__main__":
+    for extension in extensions:
+        try:
+            client.load_extension(extension)
+        except Exception as e:
+            exc = f"{type(e).__name__}: {e}"
+            print(f"Failed to load extension {extension}\n{exc}")
 
 
 @client.command(pass_context=True)
 async def help(ctx):
-    embed = discord.Embed(color=colour)
+    embed = discord.Embed(color=0x33ABC6)
     embed.add_field(name="help", value="Returns this message.", inline=False)
 
     key = ctx.message.content.replace("brit help ", "").lower()
     if key in categories:
         if key == "programming":
             embed.add_field(
-                name="blackify",
+                name="blacken",
                 value="input some python code and it will return it formatted using Black",
                 inline=False,
             )
@@ -107,118 +141,4 @@ async def on_ready():
     await client.change_presence(activity=discord.Game(name=command_prefix + "help"))
 
 
-"""
-@client.event
-async def on_message(message):
-    try:
-        if message.content.startswith(command_prefix):
-            await client.process_commands(message)
-        with open("users.json", "r") as file:
-            data = ""
-            for line in file:
-                data += line
-            if data == "":
-                users = {}
-            else:
-                users = json.loads(data)
-
-            with open("users.json", "w") as file:
-                file.write(json.dumps(users))
-
-            await update_data(users, message.author)
-            await add_experience(users, message.author, 5)
-            await level_up(users, message.author, message.channel)
-    except Exception as e:
-        print(e)
-
-
-@client.event
-async def on_member_join(member):
-    role = discord.utils.get(member.server.roles, name="Newbie")
-    await client.add_roles(member, role)
-    with open("users.json", "r") as file:
-        data = ""
-        for line in file:
-            data = data + line
-        if data == "":
-            users = {}
-        else:
-            users = json.loads(data)
-
-    await update_data(users, member)
-
-    with open("users.json", "w") as file:
-        file.write(json.dumps(users))
-
-    with open("economy.json", "r") as file:
-        data = ""
-        for line in file:
-            data = data + line
-        if data == "":
-            users = {}
-        else:
-            users = json.loads(data)
-
-    await update_data(users, member)
-
-    with open("economy.json", "w") as file:
-
-        file.write(json.dumps(users))
-"""
-
-
-@client.command(pass_context=True)
-async def load(ctx):
-    if ctx.message.author.id == 330404011197071360:
-        """Loads an extension."""
-        extension_name = ctx.message.content.replace(f"{command_prefix}load ", "")
-        try:
-            client.load_extension(f"cogs.{extension_name}")
-        except (AttributeError, ImportError) as e:
-            await ctx.channel.send(
-                "```py\n{}: {}\n```".format(type(e).__name__, str(e))
-            )
-            return
-        await ctx.channel.send("{} loaded.".format(extension_name))
-    else:
-        await ctx.channel.send("fuggoff")
-
-
-@client.command(pass_context=True)
-async def unload(ctx):
-    if ctx.message.author.id == 330404011197071360:
-        """Unloads an extension."""
-        extension_name = ctx.message.content.replace(f"{command_prefix}unload ", "")
-        client.unload_extension(f"cogs.{extension_name}")
-        await ctx.channel.send("{} unloaded.".format(extension_name))
-    else:
-        await ctx.channel.send("fuggoff")
-
-
-@client.command(pass_context=True)
-async def reload(ctx):
-    if ctx.message.author.id == 330404011197071360:
-        """Reloads an extension."""
-        extension_name = ctx.message.content.replace(f"{command_prefix}reload ", "")
-        try:
-            client.unload_extension(f"cogs.{extension_name}")
-            client.load_extension(f"cogs.{extension_name}")
-        except (AttributeError, ImportError) as e:
-            await ctx.channel.send(
-                "```py\n{}: {}\n```".format(type(e).__name__, str(e))
-            )
-            return
-        await ctx.channel.send("{} reloaded.".format(extension_name))
-    else:
-        await ctx.channel.send("fuggoff")
-
-
-if __name__ == "__main__":
-    for extension in extensions:
-        try:
-            client.load_extension(extension)
-        except Exception as e:
-            exc = f"{type(e).__name__}: {e}"
-            print(f"Failed to load extension {extension}\n{exc}")
-
-client.run("NTA1ODAwOTQ5MjQwMDM3NDE2.XSoAew.12TtWb0v38EEptlZR373o4UX2so")
+client.run(os.getenv("BRITBOT_DEV_TOKEN"))
