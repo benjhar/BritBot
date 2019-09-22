@@ -95,6 +95,7 @@ Aliases:
 >         print(f.read())
 >
 > `\``
+
 Returns:
 ```py
 def very_important_function(
@@ -123,6 +124,7 @@ Aliases:
 >         print(f.read())
 >
 > `\``
+
 Returns:
 ```py
 def very_important_function(template: str,
