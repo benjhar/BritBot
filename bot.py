@@ -13,7 +13,7 @@ import tiquations
 extensions = ["cogs.programming", "cogs.util", "cogs.fun", "cogs.sound"]
 categories = ["programming", "util", "fun"]
 commandlist = [
-    "blackify",
+    "blacken",
     "yapfify",
     "pepify",
     "evaluate",
