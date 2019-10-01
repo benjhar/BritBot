@@ -7,10 +7,10 @@ import json
 import os
 import sys
 import tiquations
+import sqlite3
 
-# import youtube_dl
 
-extensions = ["cogs.programming", "cogs.util", "cogs.fun", "cogs.sound"]
+extensions = ["cogs.programming", "cogs.util", "cogs.fun", "cogs.sound", "cogs.economy"]
 categories = ["programming", "util", "fun"]
 commandlist = [
     "blacken",
@@ -25,10 +25,8 @@ commandlist = [
     "rem",
     "say",
 ]
-
-
-players = {}
 command_prefix = "brit "
+players = {}
 client = commands.Bot(command_prefix=command_prefix, case_insensitive=True)
 client.remove_command("help")
 os.chdir(r"C:\\Users\\benha\\Documents\\Coding\\Python\\DiscordBots\\BritBot")
@@ -50,11 +48,12 @@ async def on_ready():
 async def load(ctx):
     # Loads an extension.
     extension_name = ctx.message.content[len(command_prefix + "load") :].strip()
+    extension_name = f"cogs.{extension_name}"
     if not extension_name in extensions:
         await ctx.channel.send("That is not the name of an extension.")
         return
     try:
-        client.load_extension(f"cogs.{extension_name}")
+        client.load_extension(extension_name)
     except (AttributeError, ImportError) as e:
         await ctx.channel.send("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
         return
@@ -65,10 +64,11 @@ async def load(ctx):
 async def unload(ctx, message):
     # Unloads an extension.
     extension_name = ctx.message.content[len(command_prefix + "unload") :].strip()
+    extension_name = f"cogs.{extension_name}"
     if not extension_name in extensions:
         await ctx.channel.send("That is not the name of an extension.")
         return
-    client.unload_extension(f"cogs.{extension_name}")
+    client.unload_extension(extension_name)
     await ctx.channel.send("{} unloaded.".format(extension_name))
 
 
@@ -76,12 +76,13 @@ async def unload(ctx, message):
 async def reload(ctx):
     # Reloads an extension
     extension_name = ctx.message.content[len(command_prefix + "reload") :].strip()
+    extension_name = f"cogs.{extension_name}"
     if not extension_name in extensions:
         await ctx.channel.send("That is not the name of an extension.")
         return
-    client.unload_extension(f"cogs.{extension_name}")
+    client.unload_extension(extension_name)
     try:
-        client.load_extension(f"cogs.{extension_name}")
+        client.load_extension(extension_name)
     except (AttributeError, ImportError) as e:
         await ctx.channel.send("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
         return
