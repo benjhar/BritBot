@@ -16,14 +16,11 @@ class fun(commands.Cog):
     # FUN START
     @commands.command(pass_context=True)
     async def noot(self, ctx):
-        try:
-            await ctx.channel.send("NOOT NOOT")
-            await bot.send_file(ctx.message.channel, "Noot_Noot.jpg")
-        except:
-            await ctx.channel.send("Invalid Input")
+        await ctx.channel.send("NOOT NOOT")
+        await ctx.channel.send(file=discord.File("Noot_Noot.jpg"))
 
     @commands.command(pass_context=True)
-    async def pong(self):
+    async def pong(self, ctx):
         try:
             await ctx.channel.send(":ping_pong:  http://www.ponggame.org/")
         except:

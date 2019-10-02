@@ -127,7 +127,7 @@ class util(commands.Cog):
     async def ping(self, ctx):
         r = requests.get(
             "https://discordapp.com/api",
-            headers={"Authorization": f"Bot:{os.getenv('BOT_TOKEN')}"},
+            headers={"Authorization": f"Bot:{os.getenv('BRITBOT_DEV_TOKEN')}"},
         )
         latency = r.elapsed.total_seconds()
         embed = discord.Embed(
