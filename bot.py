@@ -11,7 +11,7 @@ import sqlite3
 
 
 extensions = ["cogs.programming", "cogs.util", "cogs.fun", "cogs.sound", "cogs.economy"]
-categories = ["programming", "util", "fun"]
+categories = ["programming", "util", "fun", "eco"]
 commandlist = [
     "blacken",
     "yapfify",
@@ -80,12 +80,7 @@ async def reload(ctx):
     if not extension_name in extensions:
         await ctx.channel.send("That is not the name of an extension.")
         return
-    client.unload_extension(extension_name)
-    try:
-        client.load_extension(extension_name)
-    except (AttributeError, ImportError) as e:
-        await ctx.channel.send("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
-        return
+    client.reload_extension(extension_name)
     await ctx.channel.send(f"{extension_name} reloaded")
 
 
@@ -143,10 +138,34 @@ async def help(ctx):
                 name="pong", value="play a game of pong online", inline=False
             )
 
+        elif key == "eco":
+            embed.add_field(
+                name="balance", value="Returns your balance in Pounds", inline=False
+            )
+            embed.add_field(
+                name="income",
+                value="Returns your weekly income in Pounds",
+                inline=False,
+            )
+            embed.add_field(
+                name="daily", value="Collect a daily cash draw.", inline=False
+            )
+            embed.add_field(
+                name="transfer",
+                value="Transfer an amount of money to another user.",
+                inline=False,
+            )
+            embed.add_field(
+                name="share",
+                value="Share an amount of money between multiple users.",
+                inline=False,
+            )
+
         msg = await ctx.message.author.send(embed=embed)
+
     else:
         await ctx.message.author.send(
-            f"{key} is not a valid key. Accepted keys are: Programming, Util and Fun"
+            f"{key} is not a valid key. Accepted keys are: Programming, Util, Fun and Eco. For example: `brit help util`"
         )
     await ctx.message.add_reaction("✉")
 

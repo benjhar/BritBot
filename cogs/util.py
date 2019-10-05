@@ -75,7 +75,7 @@ class util(commands.Cog):
             print(e)
 
     @say.error
-    async def say_error(error, ctx):
+    async def say_error(ctx, error):
         if isinstance(error, CheckFailure):
             await ctx.channel.send(
                 f"{ctx.message.author.mention}, you do not have permission to run that command"
