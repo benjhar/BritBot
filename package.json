@@ -1,0 +1,22 @@
+{
+  "name": "folding-at-home-team-data-for-discord",
+  "version": "1.0.0",
+  "description": "",
+  "main": "wrapper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thenamesweretakenalready/Folding-At-Home-Team-Data-for-Discord.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thenamesweretakenalready/Folding-At-Home-Team-Data-for-Discord/issues"
+  },
+  "homepage": "https://github.com/thenamesweretakenalready/Folding-At-Home-Team-Data-for-Discord#readme",
+  "dependencies": {
+    "node-wrap": "^0.2.0"
+  }
+}
