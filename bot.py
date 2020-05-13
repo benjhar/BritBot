@@ -29,7 +29,7 @@ command_prefix = "brit "
 players = {}
 client = commands.Bot(command_prefix=command_prefix, case_insensitive=True)
 client.remove_command("help")
-os.chdir(r"C:\\Users\\benha\\Documents\\Coding\\Python\\DiscordBots\\BritBot")
+os.chdir(r"yes")
 
 
 @client.event
